@@ -1,0 +1,47 @@
+---
+title: "Task3"
+author: "Deivydas Sinkevičius"
+date: '2016 m rugsėjis 16 d '
+output: html_document
+---
+##Why it's the next programming language you should learn 
+
+
+For those who aren't yet familiar with R, let's begin with a quick overview. To start, R is a fascinating programming language, one that has recently become an appealing skill to add to your resume. That's partly because the language has grown significantly in popularity; it's now used in a range of professions including software development, business analysis, statistical reporting and scientific research. It’s more likely than ever that you’ll encounter R in your organization -- and you’ll probably even find reasons to use it yourself.
+
+If you need proof, look no further than R’s growth, which is reflected in a number of independent lists; it has bounced around in the top 20 languages in the Tiobe Index of Programming Language Popularity for the last several years. In 2015, IEEE listed R at 6 in the top 10 languages of 2015. Additionally, as the amount of data-intensive work increases, the demand for tools like R for processing, data-mining and visualization will also increase.
+##R in business
+
+R originated as an open-source version of the S programming language in the 90s. Since then, it has gained the support of a number of companies, most notably RStudio and Revolution Analytics which created tools, packages, and services related to the language. But it isn't limited to these more specialized companies; R also has support from large companies that power some of the largest relational databases in the world. Oracle, for one, has incorporated R into its offerings. Earlier this year Microsoft acquired Revolution Analytics and is including the language in SQLServer 2016.  SQLServer administrators and .NET developers now have R at their fingertips, installed with their standard platform tools.
+
+R_01
+##R in higher education
+
+Here’s a fun fact: R originated in academia. Ross Ihaka and Robert Gentleman at the University of Auckland in New Zealand created it, and it’s been widely adopted in graduate programs that include intensive statistical study. R has also been used in Massive open online courses (MOOCs) such as the Coursera Data Science Program and in courses here at Pluralsight (including my own on R and RStudio). Folks taking graduate studies that involve crunching data are bound to encounter R, and like many other technologies, its introduction in schools leads naturally to its wider adoption in industry. R’s presence in higher education is confirmation of the demand for these skills in business settings.
+##R is profitable
+
+Technology is fun, sure, but most of us who enjoy it also do it for a living. Fortunately, R is not only a pleasure to use, but its demand in business often equates to higher salaries for its practitioners. The Dice Technology Salary Survey conducted last year ranked R as a highest-paying skill. The most recent O’Reilly Data Science Salary Survey also includes R among the skills used by the highest paid data scientists.
+##R has a diverse community
+
+The R community is diverse, with many individuals coming from unique professional backgrounds. This list includes academics, scientists, statisticians, business analysts and professional programmers, among others. CRAN, the comprehensive R Archive Network, maintains packages created by community members that reflect this colorful background. Packages exist to perform stock market analysis, create maps, engage in high-throughput genomic analysis and do natural language processing.  This is only the tip of the iceberg; over 7000 packages are available on CRAN as of this writing. Additionally, R-Bloggers is a blog-aggregation site that serves as a hub for news related to the R community.
+##R is fun
+
+And, of course, R is FUN! Initially, I was drawn to R for its ability to generate charts and plots in very few lines of code.; tasks that would require several hundred lines of code in another language could be accomplished in only a few lines. While it’s considered quirky when you compare it with many popular languages, it includes powerful features specifically geared toward data analysis. For example, if you run the following snippet at the R prompt:
+
+> plot(iris)
+
+The following plot is rendered:
+
+R_02
+
+The snippet results in the following operations:
+
+
+    The Iris dataset is a well-known dataset included with R by default. No special action is required to load or include it. The dataset consists of 150 records with the measurements in centimeters of the sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris (setosa, versicolor, and virginica). It is common for other R packages to include datasets for initial testing of new functionality.
+
+    The plot() function is highly adaptable. It takes in data in a variety forms and responds with a reasonable graphical plot of the data provided. It can take many options to influence its behavior. In the case shown above, each variable in the data set is plotted against every other variable in the dataset. The result is a matrix of scatter plots that give an indication of the distribution between each pair of variables. For example, at a glance, one can tell that petal length is more likely to provide a clear indication of what species a given record belongs to than sepal width.
+
+
+A picture may be worth a 1000 words, but only 10 characters in the R programming languages were required to create this surprisingly expressive chart.
+
+R is worth learning for these reasons and more. Its growth and maturity have led to widespread adoption and many resources for learning. And now with Microsoft stepping up and including R in more of its offerings, you can expect to hear more about R in the months and years to come.
