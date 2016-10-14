@@ -1,0 +1,94 @@
+---
+title: "task6"
+author: "Deivydas Sinkevičius"
+date: '2016 m spalis 9 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Nuskaitykaitome duomenis
+```{r}
+df = read.csv('R_programing_swirlResults.csv', stringsAsFactors = FALSE)
+sapply(df, class)
+```
+Matome kad visi duomenys yra korektiški išskyrus datas. Taigi keičiame jų tipą
+```{r}
+df$sysTime <- as.POSIXlt(df$sysTime)
+df$datetime <- as.POSIXlt(df$datetime)
+```
+Išvalykite masyvą nuo "šiukšlių". Praktikoje retai, kada gaunamas pilnai sutvarkyti duomenys. Taip ir šį kartą, jums reikia išvalyti masyvą nuo galimų problemų. Pavyzdžiui:
+
+    ruošiant pateikties formą buvo testuojama ar viskas gerai veikia (reikia įdentifikuoti ir pašalinti šiuo irašus);
+    
+```{r}
+unique(df$user)
+a = df$user %in% c("1vbutkus","aaa", "testas")
+df = df[(a == FALSE),]
+```
+kai kas galėjo pakartotinai suvesti formas, taip atsirastu duomenų dubliavimas. Net jeigu dubliavimosi nėra, jums reikia tuo įsitikinti.
+```{r}
+table(duplicated(df[c(2,4:10), ]))
+```
+Kurie studentai yra pilnai atlikę visas swirl užduotis, t.y. pilnai atliktos visos užduotis nepraleidžiant jokių klausimų.
+```{r}
+table(df[df$skipped==TRUE,7])
+
+table(df[!( df$user=="Dariukxas" | df$user=="Domante Bulovaite" | df$user=="Greta" | df$user=="gretajes" | df$user=="gyse3054" | df$user=="juste" | df$user=="Juste" | df$user=="Karolina" | df$user=="kestous" | df$user=="ogadova" | df$user=="ojautakaite" | df$user=="Raigardas" | df$user=="rokasaleks" |  df$user=="SandraKozlovskaja" | df$user=="simonalevickaite" | df$user=="sindeivydas" | df$user=="j" | df$user=="ju"),7])
+```
+Sudaroma nauja lentelė iš studentų kurie atliko visas užduotis
+```{r}
+ndf = df[(df$user=="aipe00" | df$user=="edba2903" | df$user=="emru3000" | df$user=="MildaPie" | df$user=="simona1234" | df$user=="zagnyte"),]
+```
+Sudaroma nauja lentele is vardų ir pamokų pavadinimų. Pašaliname pasikartojančius duomenis. Tuomet patikrinam, ar visis likę studentai atliko 16 užduočių.
+```{r}
+d=data.frame(ndf$user, ndf$lesson_name)
+d2=d[!duplicated(d), ]
+table(d2[,1])
+```
+Visas pamokas pilnai atliko: aipe00, emru3000, simona1234, zagnyte.
+## Studentai ne pilnai atlikę užduotis
+Sudarome lentelę iš studentų, kurie nėra padare visų užudočių arba praleido nors vieną klausimą.
+```{r}
+sk=df[!(df$user=="aipe00" | df$user=="emru3000" | df$user=="simona1234" | df$user=="zagnyte"),]
+```
+Patikrinama, kiek studentai atliko pamoku.
+```{r}
+sk1=data.frame(sk$user, sk$lesson_name)
+sk2=sk1[!duplicated(sk1), ]
+table(sk2[,1])
+```
+Patikriname kiek, kas praleido klausimų
+```{r}
+table(sk[sk$skipped==TRUE,7])
+```
+## Laikai
+Sudarome visų duomenų lentelę iš user, takeTime, lesson_name. Išrušiuojame duomenis pagal pamokos vardą
+```{r}
+t1=data.frame(df$user, df$takeTime, df$lesson_name)
+t2=t1[!duplicated(t1),]
+t3=t2[order(t2$df.lesson_name),]
+```
+Randame, per kiek laiko vidutiniškai buvo atliktos pamokos
+```{r}
+pamoka=unique(t3$df.lesson_name)
+  laikas= c(mean(t3[t3$df.lesson_name=="Base Graphics",2]), mean(t3[t3$df.lesson_name=="Basic Building Blocks",2]), mean(t3[t3$df.lesson_name=="Dates and Times",2]), mean(t3[t3$df.lesson_name=="Dummy Lesson",2]), mean(t3[t3$df.lesson_name=="Functions",2]), mean(t3[t3$df.lesson_name=="lapply and sapply",2]), mean(t3[t3$df.lesson_name=="Logic",2]), mean(t3[t3$df.lesson_name=="Looking at Data",2]), mean(t3[t3$df.lesson_name=="Matrices and Data Frames",2]), mean(t3[t3$df.lesson_name=="Missing Values",2]), mean(t3[t3$df.lesson_name=="Sequences of Numbers",2]), mean(t3[t3$df.lesson_name=="Simulation",2]), mean(t3[t3$df.lesson_name=="Subsetting Vectors",2]), mean(t3[t3$df.lesson_name=="vapply and tapply",2]), mean(t3[t3$df.lesson_name=="Vectors",2]), mean(t3[t3$df.lesson_name=="Workspace and Files",2]))
+l=data.frame(pamoka, laikas)
+```
+Kuri pamoka buvo atlikta trumpiausiai ir ilgiausiai
+```{r}
+l$pamoka[which.max(l$laikas)]
+l$pamoka[which.min(l$laikas)]
+```
+Sunkiausios pamokos pagal praleistus klausimus ir klaidingą bandymų skaičių
+```{r}
+s= table(df$lesson_name, df$skipped)
+which.max(s[,2])
+
+b= table(df$lesson_name, df$correct)
+which.max(b[,1])
+```
+
+
+
