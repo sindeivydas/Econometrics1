@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 Nuskaitykaitome duomenis
 ```{r}
-df = read.csv('R_programing_swirlResults.csv', stringsAsFactors = FALSE)
+df = read.csv('R_programing_swirlResults.csv.csv', stringsAsFactors = FALSE)
 sapply(df, class)
 ```
 Matome kad visi duomenys yra korektiški išskyrus datas. Taigi keičiame jų tipą
@@ -90,5 +90,5 @@ b= table(df$lesson_name, df$correct)
 which.max(b[,1])
 ```
 
-
+Didžioji dalis nurašytą nuo raigardas darbo
 
