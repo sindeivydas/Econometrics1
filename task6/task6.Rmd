@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
 Nuskaitykaitome duomenis
 ```{r}
 df = read.csv('R_programing_swirlResults.csv.csv', stringsAsFactors = FALSE)
@@ -20,75 +21,93 @@ df$datetime <- as.POSIXlt(df$datetime)
 ```
 Išvalykite masyvą nuo "šiukšlių". Praktikoje retai, kada gaunamas pilnai sutvarkyti duomenys. Taip ir šį kartą, jums reikia išvalyti masyvą nuo galimų problemų. Pavyzdžiui:
 
-    ruošiant pateikties formą buvo testuojama ar viskas gerai veikia (reikia įdentifikuoti ir pašalinti šiuo irašus);
-    
+ruošiant pateikties formą buvo testuojama ar viskas gerai veikia (reikia įdentifikuoti ir pašalinti šiuo irašus);
+  
 ```{r}
 unique(df$user)
-a = df$user %in% c("1vbutkus","aaa", "testas")
-df = df[(a == FALSE),]
 ```
-kai kas galėjo pakartotinai suvesti formas, taip atsirastu duomenų dubliavimas. Net jeigu dubliavimosi nėra, jums reikia tuo įsitikinti.
 ```{r}
-table(duplicated(df[c(2,4:10), ]))
+ind <- with(df, which(user=="aaa" | user=="testas" | user=="1vbutkus"))
+df <- df[-ind,]
+unique(df$user)
+```
+Toliau pastebime, jog kai kurie vartotojai pasirašinėjo keliais skirtingais vardais, pvz., vardai "Juste", "juste", "ju", ir "j" priklauso tam pačiam žmogui. Tas pats galioja ir vardams "gyse" ir "gyse3054" bei "rokasalek" ir "rokasaleks". Taigi, suvienodiname šiuos vardus.
+```{r}
+df$user[df$user=="gyse"] <- "gyse3054"
+df$user[df$user=="rokasalek"] <- "rokasaleks"
+df$user[df$user=="Juste" | df$user=="ju" | df$user=="j"] <- "juste"
+unique(df$user)
+```
+
+Dabar, kai besidubliuojančių vartotojų nebėra, patikriname, ar nėra pakartotinai to paties vartotojo suvestų pamokų ir pašaliname besidubliuojančias eilutes. Tam reikia tikrinti tik stulpelius su vartotojo vardu (7), pamokos pavadinimu (9), klausimo numeriu (10), bandymo numeriu (12) ir "skipped" reikšme (14).
+
+Sukuriame naują duomenų masyvą su šiais stulpeliais, surandame jame pasikartojančias eilutes ir tas eilutes pašaliname iš pradinio duomenų masyvo.
+```{r}
+df2 <- df[,c(7, 9, 10, 12, 14)]
+dup <- which(duplicated(df2), TRUE)
+df <- df[-dup,]
 ```
 Kurie studentai yra pilnai atlikę visas swirl užduotis, t.y. pilnai atliktos visos užduotis nepraleidžiant jokių klausimų.
-```{r}
-table(df[df$skipped==TRUE,7])
 
-table(df[!( df$user=="Dariukxas" | df$user=="Domante Bulovaite" | df$user=="Greta" | df$user=="gretajes" | df$user=="gyse3054" | df$user=="juste" | df$user=="Juste" | df$user=="Karolina" | df$user=="kestous" | df$user=="ogadova" | df$user=="ojautakaite" | df$user=="Raigardas" | df$user=="rokasaleks" |  df$user=="SandraKozlovskaja" | df$user=="simonalevickaite" | df$user=="sindeivydas" | df$user=="j" | df$user=="ju"),7])
-```
-Sudaroma nauja lentelė iš studentų kurie atliko visas užduotis
+Sukuriame naują masyvą **"df_skipped"**, kuriame yra visi praleisti klausimai ir su funkcija **"unique"** surandame vartotojus, kurie yra tame masyve, t.y. yra praleidę bent vieną klausimą.
 ```{r}
-ndf = df[(df$user=="aipe00" | df$user=="edba2903" | df$user=="emru3000" | df$user=="MildaPie" | df$user=="simona1234" | df$user=="zagnyte"),]
+ind <- with(df, which(skipped =="TRUE"))
+df_skipped <- df[ind,]
+users <- unique(df_skipped$user)
+users
 ```
-Sudaroma nauja lentele is vardų ir pamokų pavadinimų. Pašaliname pasikartojančius duomenis. Tuomet patikrinam, ar visis likę studentai atliko 16 užduočių.
+Sudaroma nauja lentelė iš studentų kurie atliko užduotis nenaudja "skip"
 ```{r}
-d=data.frame(ndf$user, ndf$lesson_name)
-d2=d[!duplicated(d), ]
-table(d2[,1])
+ind <- with(df, which(is.element(df$user, users) =="TRUE"))
+df_noskip <- df[-ind,]
+unique(df_noskip$user)
+```
+Sudaroma nauja lentelė iš vardų ir atliktų pamokų. Pašaliname pasikartojančius duomenis. Tuomet patikrinam, ar visi likę studentai atliko 16 užduočių.
+```{r}
+df_noskip <- df_noskip[,c(7, 9)]
+dup <- which(duplicated(df_noskip), TRUE)
+df_noskip <- df_noskip[-dup,]
+table(df_noskip$user)
 ```
 Visas pamokas pilnai atliko: aipe00, emru3000, simona1234, zagnyte.
-## Studentai ne pilnai atlikę užduotis
-Sudarome lentelę iš studentų, kurie nėra padare visų užudočių arba praleido nors vieną klausimą.
-```{r}
-sk=df[!(df$user=="aipe00" | df$user=="emru3000" | df$user=="simona1234" | df$user=="zagnyte"),]
-```
-Patikrinama, kiek studentai atliko pamoku.
-```{r}
-sk1=data.frame(sk$user, sk$lesson_name)
-sk2=sk1[!duplicated(sk1), ]
-table(sk2[,1])
-```
-Patikriname kiek, kas praleido klausimų
-```{r}
-table(sk[sk$skipped==TRUE,7])
-```
-## Laikai
-Sudarome visų duomenų lentelę iš user, takeTime, lesson_name. Išrušiuojame duomenis pagal pamokos vardą
-```{r}
-t1=data.frame(df$user, df$takeTime, df$lesson_name)
-t2=t1[!duplicated(t1),]
-t3=t2[order(t2$df.lesson_name),]
-```
-Randame, per kiek laiko vidutiniškai buvo atliktos pamokos
-```{r}
-pamoka=unique(t3$df.lesson_name)
-  laikas= c(mean(t3[t3$df.lesson_name=="Base Graphics",2]), mean(t3[t3$df.lesson_name=="Basic Building Blocks",2]), mean(t3[t3$df.lesson_name=="Dates and Times",2]), mean(t3[t3$df.lesson_name=="Dummy Lesson",2]), mean(t3[t3$df.lesson_name=="Functions",2]), mean(t3[t3$df.lesson_name=="lapply and sapply",2]), mean(t3[t3$df.lesson_name=="Logic",2]), mean(t3[t3$df.lesson_name=="Looking at Data",2]), mean(t3[t3$df.lesson_name=="Matrices and Data Frames",2]), mean(t3[t3$df.lesson_name=="Missing Values",2]), mean(t3[t3$df.lesson_name=="Sequences of Numbers",2]), mean(t3[t3$df.lesson_name=="Simulation",2]), mean(t3[t3$df.lesson_name=="Subsetting Vectors",2]), mean(t3[t3$df.lesson_name=="vapply and tapply",2]), mean(t3[t3$df.lesson_name=="Vectors",2]), mean(t3[t3$df.lesson_name=="Workspace and Files",2]))
-l=data.frame(pamoka, laikas)
-```
-Kuri pamoka buvo atlikta trumpiausiai ir ilgiausiai
-```{r}
-l$pamoka[which.max(l$laikas)]
-l$pamoka[which.min(l$laikas)]
-```
-Sunkiausios pamokos pagal praleistus klausimus ir klaidingą bandymų skaičių
-```{r}
-s= table(df$lesson_name, df$skipped)
-which.max(s[,2])
 
-b= table(df$lesson_name, df$correct)
-which.max(b[,1])
+##Studentai ne pilnai atlikę užduotis
+
+Sudarome lentelę iš studentų, kurie nepraleido nei vieno klausimo ir patikriname kiek užduočių jiems liko padaryti
+```{r}
+ind <- with(df_noskip, which(user=="aipe00" | user=="emru3000" | user=="simona1234" | user=="zagnyte"))
+df_noskip <- df_noskip[-ind,]
+16-table(df_noskip$user)
+```
+Dabar galime analizuoti vartotojus, praleidusius bent vieną klausimą. Surandame, kiek klausimų kiekvienas iš jų yra praleidęs.
+```{r}
+table(df_skipped$user)
+```
+Kad surastume kiek pamokų nepilnai atsiskaityta, iš duomenų lentelės su visais praleistais klausimais surandame, kokioje pamokoje, kuris vartotojas yra praleidęs vieną ar kelis klausimus.
+
+*funkcija "kable", naudojama lentelei atspausdinti yra iš paketo "knitr".
+```{r}
+#install.packages('knitr')
+library("knitr")
+df_skipped <- unique(df_skipped[c("user", "lesson_name")])
+kable(head(df_skipped, 10))
 ```
 
-Didžioji dalis nurašytą nuo raigardas darbo
+Tada į duomenų lentelę "df2" iš pradinių duomenų atrenkame eilutes su vartotojais, praleidusiais bent vieną klausimą ir lentelėje "df2" paliekame tik du stulpelius su visomis šių vartotojų pateiktomis pamokomis.
+```{r}
+ind <- with(df, which(is.element(df$user, users) =="TRUE"))
+df2 <- df[ind,]
+df2 <- df2[,c(7, 9)]
+dup <- which(duplicated(df2), TRUE)
+df2 <- df2[-dup,]
+kable(head(df2, 10))
+```
+
+Galiausiai iš 16 (t.y. visų pamokų, kurias reikėjo atlikti skaičiaus) atėmę pamokas, kurias šie vartotojai pateikė ir pridėję pamokas, kurias jie nepilnai atliko (praleido bent vieną klausimą), randame kiek pamokų kiekvienas iš jų yra nepilnai atsiskaitęs.
+```{r}
+16-table(df2$user)+table(df_skipped$user)
+```
+
+Didžioji dalis nurašytą nuo Simonos ir raigardo darbo
+
 

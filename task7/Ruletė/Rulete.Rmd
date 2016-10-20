@@ -1,0 +1,30 @@
+---
+title: "Rulete"
+author: "Deivydas Sinkevičius"
+date: '2016 m spalis 20 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Nagrinėkime standartinę kazino ruletę. Kokia tikimybė, kad po $1000$ vienodų statymų ant vienos pasirinktos spalvos, bus teigiamas balansas? Raskite apytikslę $x$ reikšmę, kuriai galioja nelygybe $P(balansas<x) = 0.25$.
+Sugeneruojame 100000 tokių bandymų ir suskaičiuojame tikimybę, kad balansas bus teigiamas.
+matome, kad 13 vienos spalvos, 13 kitos spalvos ir 1 zalias. palanki spalva traktuojama kaip 1, nepalanki, kaip -1.
+```{r}
+#install.packages('prob')
+library("prob")
+probspace(roulette(1), makespace=TRUE)
+n=10^4
+balansai <- replicate(n, sum(sample(c(rep(-1, 14), rep(1, 13)), 1000, replace = TRUE)))
+teig.bal= sum((balansai>0)==TRUE)
+prob=teig.bal/n
+prob
+```
+P(balansas<x) = 0.25
+```{r}
+x=quantile(balansai, probs=0.25)
+x
+```
+
+Nurašyta nuo zagnyte

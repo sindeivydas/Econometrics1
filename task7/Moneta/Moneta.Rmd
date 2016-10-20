@@ -1,0 +1,38 @@
+---
+title: "Moneta"
+author: "Deivydas Sinkevičius"
+date: '2016 m spalis 20 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Tarkime metama moneta. Jeigu iškrenta herbas, tai laimite $12$ EUR. Jeigu skaičius, tai pralošiate $10$ EUR. Bus žaidžiama $100$ kartų ir gauti rezultatai sumuojami.
+
+Kokia tikimybė jums turėti teigiamą balansą po $100$ kartų?
+
+Sugeneruojame 100000 monetos metimų po 100 kartų ir skaičiuojame vidurkį, kiek kartų balansas buvo teigiamas.
+```{r}
+n <- 100000
+bal <- replicate(n, sum(sample(c(12, -10), 100, replace=TRUE)))
+mean(bal>0)
+```
+Koks balanso pasikliautinis $95%$ intervalas?
+
+Apatinis pasikliautinojo intervalo rėžis:
+```{r}
+quantile(bal, 0.025)
+```
+Viršutinis pasikliautinojo intervalo rėžis:
+```{r}
+quantile(bal, 0.975)
+```
+Kaip atrodo balanso tankis?
+```{r}
+plot(density(bal), main="Balanso tankis")
+grid()
+```
+
+Nusirašyta nuo simona1234
