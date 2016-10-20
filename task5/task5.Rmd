@@ -1,7 +1,7 @@
 ---
 title: "task5"
 author: "Deivydas Sinkevičius"
-date: '2016 m rūgsėjis 25 d '
+date: '2016 m rugsėjis 25 d '
 output: html_document
 ---
 
