@@ -1,0 +1,56 @@
+---
+title: "task11"
+author: "Deivydas Sinkevičius"
+date: '2016 m lapkritis 7 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+Pakete datasets yra duomenų masyvas longley. Iš šio kintamųjų padarykite tiesinę regresiją, kur prognozuojamas kintamasis būtų GNP, o regresosius Employed. Jums reikia:
+
+```{r}
+longley #peržiurime duomenų masyvą
+```
+
+   **Įvertinti paprastosios tiesinės regresijos modelį. Pateikti modelio summary ir pakomentuoti ką reiškia gauti skaičiai. Kaip interpretuoti gautus rezultatus?**
+    
+```{r}
+y<-longley$GNP
+x<-longley$Employed
+mod<-lm(y~x)
+summary(mod)
+```
+Išvestyje matome:
+
+  1) Iškviestos funkcijos formulė
+  2) Likutis ("Residuals"), kuriame pateikiami minimumo ("Min"), pirmojo kvartilio ("1Q"), medianos ("Median"), trečiojo kvartilio ("3Q"), maksimumo ("Max") taškai.
+  3) Koeficientai("Coefficients"): įvertis ("Estimate"), standartinė paklaida ("Std. Error"), Stjudento kriterijaus statistikos t reikšmė ("t value"), tikimybė (" Pr(>|t|)")
+  4) Reikšmingumo kodai (Signif. codes), kitaip sakant tikimybės kategorijos
+  5) "Residual standard error" rodo stebimų duomenų nuokrypį nuo įvertinto jų modelio
+  6) Pakeltas R^2 ir pritaikytas R^2 parodo kiek mūsų modelis yra tinkamas. Kuo R^2 arčiau 1, tuo modelis geriau įvertina duomenis.
+  7) Fišerio skirstinio statistika ("F-statistic"), tikimybė ("p-value")
+  
+  **Padarykite modelio prognozes taškuose $62, 65, 68$.**
+```{r}
+newx<-c(62,65,68) #Susikuriame vektorių newx, kuriame nurodome šiuos taškus
+newy = predict(mod, newdata=data.frame(x=newx)) #Randame 'newx' atitinkamą koordinatę 'newy'
+newy
+```
+
+  **Išbrėžkite kintamųjų sklaidos diagramą kartu su tiesinės regresijos tiese ir naujomis prognozėmis. Grafiką pateikite su pilna legena, kurioje būtų nurodyti visi žymėjimai.**
+```{r}
+plot(x, y, main = 'Sklaidos diagrama', xlab = "Employed", ylab = "GNP", xlim = c(59, 72), pch = 1, col = '2')  # Nubraižome pirminių duomenų sklaidą
+mod <- lm(y~x)  # Pakartojame modelį, jog būtų galima nubrėžti tiesę
+abline(mod, pch = 3, col = '3')  # Nubrėžiame tiesinės regresijos tiesę
+newx = c(62,65,68)  
+newy = predict(mod, newdata = data.frame(x=newx))  # Naudosime naujuosius taškus grafikui
+points(newx, newy, pch = 7, col = '4')  # Pažymime naujai įsivestus taškus grafike
+legend( 68, 330, c("Pradinė sklaida", "Tiesinė regresija", "Naujos reikšmės"), lty = c(0, 1, 0), pch = c(1, 3, 7), col = c('2','3','4'))  # Susikuriame legendą
+```
+
+Remiausi lauruskyte darbu
