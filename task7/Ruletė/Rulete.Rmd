@@ -14,13 +14,11 @@ matome, kad 13 vienos spalvos, 13 kitos spalvos ir 1 zalias. palanki spalva trak
 ```{r}
 #install.packages('prob')
 library("prob")
-probspace(roulette(1), makespace=TRUE)
 n=10^4
-balansai <- replicate(n, sum(sample(c(rep(-1, 14), rep(1, 13)), 1000, replace = TRUE)))
-teig.bal= sum((balansai>0)==TRUE)
-prob=teig.bal/n
-prob
+balansai <- replicate(n, sum(sample(c(-1,1), 1000, replace=TRUE, prob=c(19/37, 18/37))))
+mean(balansai>0)
 ```
+
 P(balansas<x) = 0.25
 ```{r}
 x=quantile(balansai, probs=0.25)
