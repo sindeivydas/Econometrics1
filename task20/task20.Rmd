@@ -1,0 +1,29 @@
+---
+title: "task20"
+author: "Deivydas Sinkevičius"
+date: '2016 m lapkritis 28 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Su kuriomis natūraliosiomis n∈[1,1000] reikšmėmis skaičius
+n^3 + n^2 + n^2 + 1
+dalinasi iš 403?
+
+Raskite atsakymą su R nenaudodami ciklų.
+
+```{r}
+n = 1:1000
+x = n^3 + n^2 + n^2 + 1
+test1 <- function(x){
+   x %% 403 == 0 #Tikrinam, ar dalinasi iš 403 su liekana 0
+ }
+
+y = sapply(x, test1) 
+sum(y == TRUE) #Randame kiek n variantu dalinasi iš 403
+which(y) #Gauname n reikšmes, su kuriomis skaičius dalinasi iš 403
+ 
+```

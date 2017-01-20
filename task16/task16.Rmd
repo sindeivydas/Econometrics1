@@ -1,0 +1,38 @@
+---
+title: "task16"
+author: "Deivydas Sinkevičius"
+date: '2016 m lapkritis 11 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Išspręskite lygtį sveikaisiais skaičiais:
+
+x + y + 5 = xy
+
+Jums reikia rasti visus sprendinius ir įsitikinti, kad rasti visi sprendiniai.
+
+```{r}
+
+#Išsireiškia y sudarome funkciją
+test <- function(x){
+6/(x-1)+1
+}
+#Matome, kad lygtyje 6/(x-1)+1 vardiklyje yra x-1 => kai x=1 gauname 0, tačiau vardiklyje negali būti 0, todel jį pašaliname
+x <- setdiff(-10:10, 1)
+y <- -10:10
+#Formuojame ciklą, kad rastume visus galimus sprendinius
+for(i in 1:20){
+  y[i] = test(x[i])#Randame visas galimas reikšmes
+  if (y[i]%%1 == 0){
+    print(paste("x =", x[i], "y =", y[i])) #Jei reikšmė yra sveikasis skaičius, atspausdiname rezultatą
+  }
+}
+```
+Žinome, kad realiųjų skaičių yra labai daug. Kadangi ieškome sveikųjų sprendinių, galime pastebėti, kad pakanka užtikrinti, kad y turi būti sveikasis skaičius su kažkokiu sveikuoju x.  Matome, kad skaičiai didesni, nei 7 netiks, nes tada 0<6/(x-1) <1. Taip pat netiks mažesni, nei -5.
+
+Užduotį padėjo atlikti Raigardas.
+Taip pat naudojausi Mildos darbu (https://github.com/MildaPie/Econometrics1/blob/master/task16/task16.Rmd)

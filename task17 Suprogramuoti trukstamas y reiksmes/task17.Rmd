@@ -1,0 +1,59 @@
+---
+title: "task17"
+author: "Deivydas Sinkevičius"
+date: '2016 m lapkritis 13 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Jums reikia suprognozuoti input.csv faile trūkstamas y reikšmes, remiantis train.csv faile esančia informacija. Būtinai pateikite prognozių grafikus.
+
+Nuskaitomi duomenys:
+```{r}
+input <- read.csv("https://raw.githubusercontent.com/1vbutkus/Econometrics1/master/task16/input.csv", header = TRUE)
+train <- read.csv("https://raw.githubusercontent.com/1vbutkus/Econometrics1/master/task16/train.csv", header = TRUE)
+```
+Pastebime, kad yra tiesinė priklausomybė atsižvelgiant į color reikšmę.
+```{r}
+x12<-train$x[train$color == 2] #Priskiriame visus x, kai color=2
+x11<-train$x[train$color == 1] #Priskiriame visus x, kai color=1
+y12<-train$y[train$color == 2] #Priskiriame visus y, kai color=2
+y11<-train$y[train$color == 1] #Priskiriame visus y, kai color=1
+```
+Tiesinė priklausomybė matoma grafike
+```{r}
+plot(x11, y11, main = 'Train sklaidos diagrama', xlab = "x", ylab = "y", pch = 1, col = '2')  # Nubraižome train duomenų sklaidą, kai color=1
+points(x12, y12, pch = 1, col = '1') #Pridedame taskus, kai color=2
+legend( 0.3, 0.05, c("Train sklaida, kai color=1", "Train sklaida, kai color=2"), lty = c(0, 0), pch = c(1, 1), col = c('2','1'))  # Susikuriame legendą
+```
+```{r}
+mod2=lm(y12~x12) #Sukuriame modeli, kai color=2
+mod1=lm(y11~x11) #Sukuriame modeli, kai color=1
+```
+```{r}
+x21<-input$x[input$color == 1] #Priskiriame visus x, kai color=1
+x22<-input$x[input$color == 2] #Priskiriame visus x, kai color=2
+y21 = predict(mod1, newdata = data.frame(x11 = x21)) #Randame x21 atitinkamą koordinatę y21
+y22 = predict(mod2, newdata = data.frame(x12 = x22)) #Randame x22 atitinkamą koordinatę y22
+```
+```{r}
+plot(x21, y21, main = 'Prognozuojamų duomenų sklaida', xlab = "x", ylab = "y", pch = 1, col = '2')  #Nubraižome prognozuojamų duomenų sklaidą, kai color=1
+points(x22, y22, pch = 1, col = '1') #Pridedame taskus, kai color=2
+legend( 0.3, 0.2, c("Input sklaida, kai color=1", "Input sklaida, kai color=2"), lty = c(0, 0), pch = c(1, 1), col = c('2','1'))  # Susikuriame legendą
+```
+```{r}
+plot(x11, y11, main = 'Train ir input sklaida', xlab = "x", ylab = "y", pch = 1, col = '1')  # Nubraižome train duomenų sklaidą, kai color=1
+points(x12, y12, pch = 1, col = '1') #Pridedame train taskus, kai color=2
+points(x21, y21, pch = 1, col = '2') #Pridedame input taskus, kai color=1
+points(x22, y22, pch = 1, col = '2') #Pridedame input taskus, kai color=2
+legend( 0.3, 0.05, c("Train sklaida", "Input sklaida"), lty = c(0, 0), pch = c(1, 1), col = c('1','2'))  # Susikuriame legendą
+```
+
+Šaltiniai: 
+
+1) 1vbutkus "Tiesinė regresija",
+2) lauruskyte,
+3) raigardas.

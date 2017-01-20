@@ -1,0 +1,59 @@
+---
+title: "task14"
+author: "Deivydas Sinkevičius"
+date: '2016 m lapkritis 7 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Su R pagalba jums reikia išspręsti 9-tos klasės uždavinį. Uždavinys:
+
+Ar galima taip pertvarkyti skaičiaus:
+
+a) 9754310
+
+b) 8754310
+
+Skaitmenis, kad gautas skaičius dalytųsi ir 37 ?
+
+'combinat' biblioteka reikalinga funkcijai permn()
+```{r message=FALSE}
+library(combinat)
+```
+a) 9754310
+```{r}
+a = c(9,7,5,4,3,1,0) #Surašomi skaičiaus skaitmenys
+x1 = permn(a) #Surašomi visi galimi deriniai iš šio skaičiaus skaitmenų
+
+test1 <- function(a){
+   s = as.numeric(paste(a, collapse = "")) #Sujungiame vektorių į vieną skaičių
+   s %% 37 == 0 #Tikrinam, ar dalinasi iš 37 su liekana 0
+ }
+
+y1 = sapply(x1, test1)
+```
+Gaunamas rezultatas, kiek derinių dalinasi iš 37
+```{r}
+sum(y1 == TRUE) 
+```
+b) 8754310
+
+Atliekame analogišką sprendimą, kaip ir a) dalyje
+```{r}
+b = c(8,7,5,4,3,1,0)
+x2 = permn(b) 
+
+test2 <- function(b){
+   s2 = as.numeric(paste(b, collapse = ""))
+   s2 %% 37 == 0
+ }
+
+y2 = sapply(x2, test2)
+```
+Gaunamas rezultatas, kiek derinių dalinasi iš 37
+```{r}
+sum(y2 == TRUE) 
+```

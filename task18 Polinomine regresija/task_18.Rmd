@@ -1,0 +1,72 @@
+---
+title: "task18"
+author: "Deivydas Sinkevičius"
+date: '2016 m lapkritis 18 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Jums reikia atlikti paprastą tiesinę regresiją. Prognozuojamas kintamasis y, regresosrius x. Duomenų failas:
+
+https://github.com/1vbutkus/Econometrics1/blob/master/task15/data.csv
+
+**1. Įvertinti tiesinės regresijos modelį yt=β0+β1xt+β2x2t+εt. Pateikti modelio `summary` ir pakomentuoti ką reiškia gauti skaičiai. Kaip interpretuoti gautus rezultatus?**
+```{r}
+data <- read.csv("https://raw.githubusercontent.com/1vbutkus/Econometrics1/master/task15/data.csv", header = TRUE)
+```
+```{r}
+x <- data$x
+y <- data$y
+mod = lm (y~x+I(x^2))
+summary(mod)
+```
+Išvestyje matome:
+
+**Iškviestos funkcijos formulė**
+
+**Residuals** 
+kuriame pateikiami minimumo ("Min"), pirmojo kvartilio ("1Q"), medianos ("Median"), trečiojo kvartilio ("3Q"), maksimumo ("Max") taškai.
+
+**Coefficients**
+
+- Estimate - β0, β1, β2 reikšmės, kai regresijos tiesė aprašoma pavidalu µ(x) = β0 + β1*x + β2*x^2
+
+- Std. Error - Koeficientų įverčių standartinis nuokrypis (kuo mažesnis, tuo geriau. Turėtų būti 2 kartus mažesės nei Estimate reikšmės)
+
+- Pr(>|t|) - tikimybė, kad koeficientas NĖRA reikšmingas. Kuo mažesnis, tuo geriau (mažesnis už nustatytą reikšmingumo lygmenį)   
+
+- Significance Stars - *** rodo didelį y priklausomumą nuo x, * - mažą priklausomybę.
+
+**Signif. codes** rodo x ir y priklausomybę su įvairiais reikšmingumo lygmenimis. Blank=bad, Dots=pretty good, Stars=good, More Stars=very good.
+
+**Residual standard error** - Residuals standartinis nuokrypis.
+
+**Multiple R-squared** matuojamas goodness of fit (kuo reikšmė didesnė, tuo geriau, didžiausia galima reikšmė 1)
+
+**F-statistic** parodo, ar modelis, turintis daugiau parametrų tinka labiau už mažiau parametrų turintį modelį.
+
+**2. Padarykite modelio prognozes taškuose (0, 0.3, 0.5).**
+```{r}
+newx<-c(0,0.3,0.5) #Susikuriame vektorių newx, kuriame nurodome šiuos taškus
+newy = predict(mod, newdata=data.frame(x=newx)) #Randame 'newx' atitinkamą koordinatę 'newy'
+newy
+```
+**3. Išbrėžkite kintamųjų sklaidos diagramą kartu su tiesinės regresijos tiese ir naujomis prognozėmis. Grafiką pateikite su pilna legena, kurioje būtų nurodyti visi žymėjimai.**
+```{r}
+plot(x, y, xlab = "x", ylab = "y", pch = 1, col = '2')  # Nubraižome pirminių duomenų sklaidą
+newy2 <- predict(mod, newdata = data.frame(x = seq(-0.4, 0.8, 0.1))) #Susikuriame newy2 tam, kad nubrėžtume regresijos kreivę.
+lines(seq(-0.4, 0.8, 0.1), newy2, pch = 3, col = 1, lwd = 3) # Nubrėžiame regresijos kreivę
+points(newx, newy, pch = 16, col = 4) # Pažymime įsivestus taškus grafike
+legend( 0.45, 2.15, c("Pradinė sklaida", "Regresijos kreivė", "Naujos reikšmės"), lty = c(0, 1, 0), pch = c(1, 3, 16), col = c('2','1','4'))  # Susikuriame legendą
+```
+
+**4. Pakomentuokite ar tinkamas šis modelis duotiems duomenims. Ar galite pateikti tobulinimo pasiūlymų?**
+
+Manau, kad šis modelis yra tinkamas duotiems duomenims
+
+
+Rėmiausi Raigardo darbu, taip pat Mildos darbu: https://github.com/MildaPie/Econometrics1/tree/master/task18
+

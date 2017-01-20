@@ -1,0 +1,45 @@
+---
+title: "task21"
+author: "Deivydas Sinkevičius"
+date: '2016 m gruodis 9 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("prob")
+```
+
+Vyksta toks lošimas: pradžioje metami du lošimo kauliukai ir užfiksuojama iškritusių akučių suma, pažymėkime ją s. Po to metama moneta. Jei iškrito herbas, tai laimite sumą s,  o jei skaičius, tai pralošiate 7.5.
+
+a) Raskite teorinį lošimo baigties skirstinį.
+
+```{r}
+St <- rolldie(2, nsides = 6, makespace = TRUE)
+St <- addrv(St, sum = X1 + X2)
+S_teor <- marginal(St, vars="sum")
+sum = S_teor$sum
+probs = (S_teor$probs)/2 # kadangi tikimybė, jog iškris herbas arba skaičius yra 1/2, tai visas kauliukų iškritimo galimybes taip pat reikai padalinti pusiau, nes tikimybė pralošti 7,5 yra 1/2
+data <- data.frame(sum, probs)
+add <- data.frame(sum = -7.5, probs = 0.5) # įtraukiama paskutinė galimybė - kad iškrito skaičius, kurios tikimybė yra 1/2
+Tskirstinys <- rbind(add,data)
+Tskirstinys
+```
+b) Atlikite Monte-Carlo modeliavimą ir gautus rezultatus palyginkite su teoriniais.
+```{r}
+n<- 10^5
+x1 = sample(1:6, n, replace=TRUE)
+x2 = sample(1:6, n, replace = TRUE)
+s=x1+x2
+moneta = sample(c(0, 1), n, replace = TRUE)
+sum <- moneta*s
+sum[sum==0] = -7.5
+skirstinys <- data.frame(table(sum)/n)
+skirstinys
+palyginimas <- cbind(Tskirstinys,skirstinys) #palyginame abiejų skirstinių reikšmes
+palyginimas
+
+```
+Kairėje pusėje teorinės tikimybės, dešinėje atlikus Monte-Carlo modeliavimą
+
+Naudojausi: Raigardo darbu

@@ -1,0 +1,72 @@
+---
+title: "task19"
+author: "Deivydas Sinkevičius"
+date: '2016 m lapkritis 25 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Jums reikia atlikti tiesinę regresiją. Prognozuojamas kintamasis y, duomenų failas: input.csv
+
+```{r}
+train=read.csv('C:/Users/Deivydas/Desktop/train.csv', stringsAsFactors = FALSE)
+head(train)
+```
+
+1. Įvertinti tiesinės regresijos modelį:
+
+yt=βUAB1{status=UAB}+βII1{status=II}+βxt+εt
+
+
+Vertinimui sukurkite ir naudokite fiktyvus kintamuosius
+```{r}
+x = train$x
+y = train$y
+s = train$status
+mod1=lm(y ~ x + I((s=='UAB')*1) + I((s=='II')*1) - 1)
+summary(mod1)
+```
+2. Įvertinkite tą patį tiesinės regresijos modelį, bet dabar tiesiogiai panaudokite `status` kintamąjį kaip `faktor` tipo regresorių.
+```{r}
+mod2=lm(y ~ x + factor(s))
+summary(mod2)
+```
+3. Palyginkite dviejų vertinimų rezultatus:
+
+    Palyginkite modelių charakteristikas: R-kvadratą, F statistiką ir paklaidų dispersiją.
+    Palyginkite modelių prognozes.
+    Ar abiejų modelių įverčiai sutampa? Jeigu nesutampa, tai paaiškinkite kodėl atsiranda skirtumai ir kaip siejasi abiejų modelių įverčiai, 
+  
+```{r}
+(summary(mod1))$r.squared
+(summary(mod2))$r.squared
+```
+Matome, jog pirmojo modelio R-kvadratas yra didesnis negu antrojo modelio.
+Taip pat iš summary galime matyti, kad F statistikos irgi skiriasi. Pirmojo modelio F statistika yra didesnė (5.513e+04 > 4.653e+04)  
+```{r}
+summary(mod1)$sigma
+summary(mod2)$sigma
+```
+Gauname, kad paklaidų dispersijos sutampa.
+```{r}
+prognoze1 = predict(mod1, train)
+prognoze2 = predict(mod2, train)
+max(abs(prognoze1-prognoze2))
+```
+Kadangi gauname labai mažą skaičių, modelių prognozės nesiskiria
+
+Abiejų modelių įverčiai nesutampa, nes pirmuoju atvėju. Pirmojo modelio `Coefficients` rodo lygties y = βx + α1k+ α2(1-k)  koeficientų β, α1, α2 įverčius (β=1.770577, α1=2.460568, α2=3.986852). Antrojo modelio `Coefficients` rodo lygties y = βx + (α1-α2)k+α2 koeficientų β, α1, α2 įverčius (β=1.770577, (α1-α2)=-1.526283, α2=3.986852). Pirmojo modelio lygtį galime suvesti į antrojo modelio lygtį, taigi: y = βx + α1k+ α2(1-k) = βx + α1k + α2 - α2k = βx + (α1-α2)k+α2. Taigi sutrauke panašius narius gauname, kad kad  y = βx + α1k+ α2(1-k) = βx + (α1-α2)k+α2. Iš šių lygybių matome, nors įverčiai nesutampa, tačiau abu modelių įverčiai siejasi vienas su kitu.
+
+4. Duomenų faile `test.csv` yra analogiška duomenų porcija. Remiantis duomenimis, jums reikia padaryti Y prognozę ir palyginti su faktinėmis Y reikšmėmis (prognozėms pasirinkite betkurį modelį). Palyginimui suskaičiuokite paklaidų standartinį nuokrypį ir palyginkite jį su modelio vertinimo metu gautu įverčių. 
+```{r}
+test=read.csv('C:/Users/Deivydas/Desktop/test.csv', stringsAsFactors = FALSE)
+yprognoze=predict(mod1,newdata = test)
+sd(test$y - yprognoze)
+summary(mod1)$sigma
+```
+Gauname, kad modelio paklaidų standartinis nuokrypis yra didesnis negu modelio vertinimo metu gautu įverčiu
+
+Naudojausi Raigardo ir Gretos pagalba
+

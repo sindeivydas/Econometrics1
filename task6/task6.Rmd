@@ -20,6 +20,9 @@ df$sysTime <- as.POSIXlt(df$sysTime)
 df$datetime <- as.POSIXlt(df$datetime)
 ```
 Išvalykite masyvą nuo "šiukšlių". Praktikoje retai, kada gaunamas pilnai sutvarkyti duomenys. Taip ir šį kartą, jums reikia išvalyti masyvą nuo galimų problemų. Pavyzdžiui:
+```{r}
+sapply(df, class)
+```
 
 ruošiant pateikties formą buvo testuojama ar viskas gerai veikia (reikia įdentifikuoti ir pašalinti šiuo irašus);
   

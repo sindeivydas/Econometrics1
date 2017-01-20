@@ -1,0 +1,65 @@
+---
+title: "task15"
+author: "Deivydas Sinkevičius"
+date: '2016 m lapkritis 8 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**Jums reikia atlikti paprastą tiesinę regresiją. Prognozuojamas kintamasis y, regresosrius x. Duomenų failas:**
+
+https://github.com/1vbutkus/Econometrics1/blob/master/task15/data.csv
+
+Iš pradžių nuskaitome duomenis ir įsitikiname kad failas nėra tuščias:
+```{r}
+data=read.csv('data.csv', stringsAsFactors = FALSE)
+data
+```
+
+
+**1. Įvertinti paprastosios tiesinės regresijos modelį. Pateikti modelio `summary` ir pakomentuoti ką reiškia gauti skaičiai. Kaip interpretuoti gautus rezultatus?**
+
+Su funkcija 'lm' įvertiname tiesinės regresijos modelį pateiktiems duomenims ir pateikiame modelio 'summary':
+```{r}
+x<-data$x
+y<-data$y
+mod<-lm(y~x)
+summary(mod)
+```
+Išvestyje matome:
+
+  1) Iškviestos funkcijos formulė
+  2) Likutis ("Residuals"), kuriame pateikiami minimumo ("Min"), pirmojo kvantilio ("1Q"), medianos ("Median"), trečiojo kvantilio ("3Q"), maksimumo ("Max") taškai."Residuals"" rodo paklaidą, kiek prognozuojami duomenys gali skirtis nuo stebimų duomenų, t.y. kaip duomenys yra išsibarstę apie regresijos tiesę.
+  3) Koeficientai("Coefficients"): įvertis ("Estimate"), standartinė paklaida ("Std. Error"), Stjudento kriterijaus statistikos t reikšmė ("t value"), tikimybė (" Pr(>|t|)")
+  4) Reikšmingumo kodai (Signif. codes), kitaip sakant tikimybės kategorijos
+  5) "Residual standard error" rodo stebimų duomenų nuokrypį nuo įvertinto jų modelio
+  6) Pakeltas R^2 ir pritaikytas R^2 parodo kiek mūsų modelis yra tinkamas. Kuo R^2 arčiau 1, tuo modelis geriau įvertina duomenis.
+  7) Fišerio skirstinio statistika ("F-statistic"), tikimybė ("p-value")
+
+**2. Padarykite modelio prognozes taškuose $0, 0.3, 0.5$.**
+```{r}
+newx<-c(0,0.3,0.5) #Susikuriame vektorių newx, kuriame nurodome šiuos taškus
+newy = predict(mod, newdata=data.frame(x=newx)) #Randame 'newx' atitinkamą koordinatę 'newy'
+newy
+```
+
+**3. Išbrėžkite kintamųjų sklaidos diagramą kartu su tiesinės regresijos tiese ir naujomis prognozėmis. Grafiką pateikite su pilna legena, kurioje būtų nurodyti visi žymėjimai.**
+```{r}
+plot(x, y, xlab = "x", ylab = "y", pch = 1, col = '2')  # Nubraižome pirminių duomenų sklaidą
+abline(mod, pch = 3, col = '3')  # Nubrėžiame tiesinės regresijos tiesę
+points(newx, newy, pch = 7, col = '4')  # Pažymime įsivestus taškus grafike
+legend( 0.45, 2.15, c("Pradinė sklaida", "Tiesinė regresija", "Naujos reikšmės"), lty = c(0, 1, 0), pch = c(1, 3, 7), col = c('2','3','4'))  # Susikuriame legendą
+```
+
+**4. Pakomentuokite ar tinkamas šis modelis duotiems duomenims. Ar galite pateikti tobulinimo pasiūlymų?**
+```{r}
+(summary(mod))$r.squared
+```
+R^2 yra statistinis matas, kuris parodo, kaip duomenys yra „arti“ regresinės tiesės. R^2 reikšmė yra intervale [0,1], tad kuo matas arčiau 1 - tuo regresinė tiesė labiau prisitaikiusi prie duomenų.
+
+Šis modelis nėra labai tinkamas duotiems duomenims, nes matome, kad gautas skaičius(0.7178925) nėra labai arti 1.
+
+Rėmiausi task11(https://github.com/sindeivydas/Econometrics1/tree/master/task11) ir http://ekonometrija.lt/blog/tiesin%C4%97-regresija

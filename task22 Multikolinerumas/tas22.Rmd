@@ -1,0 +1,71 @@
+---
+title: "task22"
+author: "Deivydas Sinkevičius"
+date: '2016 m gruodis 16 d '
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(MASS)
+```
+1. Sugeneruokite atsitiktinių dydžių vektorius (n=100)  x1, x2 ir ε iš populiacijos su tokiomis charakteristikomis:
+ var(x1)=5,var(x2)=5,cor(x1,x2)=0.9,var(ε)=1.
+Tuomet sugeneruokite y pagal tokią lygtį:
+y=1+2x1+3x2+ε.
+
+```{r}
+sigma <- matrix(c(5,5*0.9,0.9*5,5),2,2)
+sigma
+mat = mvrnorm(n =100, rep(0,2),sigma) # Sugeneruojame matrica iš x1 ir x2
+var(mat)
+x1<-mat[,1] # Priskiriame visas x1 reikšmes
+x2<-mat[,2] # Priskiriame visas x2 reikšmes
+e = rnorm(100)
+y = 1 + 2*x1 + 3*x2 + e
+```
+
+2. Įvertinkite tiesinę regresiją su `lm` funkciją ir išsaugokite įvertintus koeficientus.
+```{r}
+mod = lm(y ~ x1+x2) # Įvertiname tiesnę regresiją
+cof = mod$coefficients # Išsaugome įvertintus koeficientus
+```
+
+
+3. Kartokite 1. ir 2. žingsnius 1000 kartų. Tuomet, gaukite įverčių vidurkius ir standartinį nuokrypį. Taip pat išbrėžkite gautų koeficientų tankio grafikus.
+```{r}
+funkc = function(sigma){ # 1 ir 2 žingsnius susirašome į funkciją
+mat = mvrnorm(n =100, rep(0,2),sigma)
+x1<-mat[,1]
+x2<-mat[,2]
+e = rnorm(100)
+y = 1 + 2*x1 + 3*x2 + e
+mod = lm(y ~ x1+x2)
+cof = mod$coefficients
+return(cof)
+}
+k = replicate(1000, funkc(sigma)) # 1 ir 2 žingsnius kartojame 1000 kartų
+apply(k, 1, mean) # Įverčių vidurkis
+apply(k, 1, sd) # Įverčių standartinis nuokrypis
+plot(density(k[1,])) # Tankio grafikas konstantų
+plot(density(k[2,])) # Tankio grafikas x1
+plot(density(k[3,])) # Tankio grafikas x2
+
+```
+
+
+4. Dar kartą atlikite 1. punktą. Tuomet įvertinę tiesinę regresiją pažiūrėkite modelio `summary`. Prie koeficientų įverčių yra įvertinta ir jų standartinė paklaida. Palyginkite ją su 3-čiame punkte gautais standartiniais nuokrypiais. Pakomentuokite gautus rezultatus.
+```{r}
+sigma <- matrix(c(5,5*0.9,0.9*5,5),2,2)
+mat = mvrnorm(n =100, rep(0,2),sigma)
+x1<-mat[,1]
+x2<-mat[,2]
+e = rnorm(100)
+y = 1 + 2*x1 + 3*x2 + e
+mod = lm(y ~ x1+x2)
+summary(mod)
+summary(mod)$sigma # Pažiūrime standartinę paklaidą
+```
+3 punkte gauti standartiniai nuokrypiai yra žymiai mažesni negu `summary` pateikta standartinė paklaida
+
+Darbą padėjo atlikti Raigardas, taip pat konsultavausi su Greta
